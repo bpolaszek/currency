@@ -1,0 +1,5 @@
+suites:
+    main:
+        namespace: BenTools\Currency
+        psr4_prefix: BenTools\Currency
+        src_path: src
