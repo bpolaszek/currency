@@ -17,7 +17,7 @@ use Http\Discovery\MessageFactoryDiscovery;
 use Http\Message\RequestFactory;
 use Psr\SimpleCache\CacheInterface;
 
-class CurrencyLayerProvider implements ExchangeRateProviderInterface
+final class CurrencyLayerProvider implements ExchangeRateProviderInterface
 {
     /**
      * @var string

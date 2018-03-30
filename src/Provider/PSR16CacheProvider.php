@@ -8,7 +8,7 @@ use BenTools\Currency\Model\ExchangeRateInterface;
 use DateTimeInterface;
 use Psr\SimpleCache\CacheInterface;
 
-class PSR16CacheProvider implements ExchangeRateProviderInterface
+final class PSR16CacheProvider implements ExchangeRateProviderInterface
 {
     /**
      * @var ExchangeRateProviderInterface

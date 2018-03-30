@@ -17,7 +17,7 @@ use Http\Discovery\MessageFactoryDiscovery;
 use Http\Message\RequestFactory;
 use Psr\SimpleCache\CacheInterface;
 
-class FixerIOProvider implements ExchangeRateProviderInterface
+final class FixerIOProvider implements ExchangeRateProviderInterface
 {
     /**
      * @var string

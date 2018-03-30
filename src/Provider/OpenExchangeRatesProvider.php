@@ -17,7 +17,7 @@ use Http\Discovery\MessageFactoryDiscovery;
 use Http\Message\RequestFactory;
 use Psr\SimpleCache\CacheInterface;
 
-class OpenExchangeRatesProvider implements ExchangeRateProviderInterface
+final class OpenExchangeRatesProvider implements ExchangeRateProviderInterface
 {
     /**
      * @var string
