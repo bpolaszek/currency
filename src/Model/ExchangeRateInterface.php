@@ -24,5 +24,5 @@ interface ExchangeRateInterface
      *
      * @return ExchangeRateInterface
      */
-    public function invertCurrencies(): ExchangeRateInterface;
+    public function swapCurrencies(): ExchangeRateInterface;
 }

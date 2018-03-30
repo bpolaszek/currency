@@ -85,7 +85,7 @@ final class OpenExchangeRatesProvider implements ExchangeRateProviderInterface
 
         // Invert currencies
         if ('USD' === $targetCurrency->getCode()) { // OpenExchangeRates only provide USD -> *
-            return $this->getExchangeRate($targetCurrency, $sourceCurrency, $date)->invertCurrencies();
+            return $this->getExchangeRate($targetCurrency, $sourceCurrency, $date)->swapCurrencies();
         }
 
         $url = sprintf('https://openexchangerates.org/api/historical/%s.json?app_id=%s', $date->format('Y-m-d'), $this->appId);

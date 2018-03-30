@@ -65,7 +65,7 @@ final class ExchangeRate implements ExchangeRateInterface
     /**
      * @inheritDoc
      */
-    public function invertCurrencies(): ExchangeRateInterface
+    public function swapCurrencies(): ExchangeRateInterface
     {
         $clone = clone $this;
         $clone->sourceCurrency = $this->targetCurrency;

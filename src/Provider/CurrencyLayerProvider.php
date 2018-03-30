@@ -85,7 +85,7 @@ final class CurrencyLayerProvider implements ExchangeRateProviderInterface
 
         // Invert currencies
         if ('USD' === $targetCurrency->getCode()) { // CurrencyLayer free plan only provide USD -> *
-            return $this->getExchangeRate($targetCurrency, $sourceCurrency, $date)->invertCurrencies();
+            return $this->getExchangeRate($targetCurrency, $sourceCurrency, $date)->swapCurrencies();
         }
 
         $url = sprintf('http://apilayer.net/api/historical?access_key=%s&date=%s', $this->accessKey, $date->format('Y-m-d'));

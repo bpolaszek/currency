@@ -32,7 +32,7 @@ final class CurrencyConverter implements CurrencyConverterInterface
         $target = $exchangeRate->getTargetCurrency()->getCode();
         $this->exchangeRates[$source][$target] = $exchangeRate;
 
-        $invertExchangeRate = $exchangeRate->invertCurrencies();
+        $invertExchangeRate = $exchangeRate->swapCurrencies();
 
         if (!$this->hasExchangeRate($invertExchangeRate->getSourceCurrency()->getCode(), $invertExchangeRate->getTargetCurrency()->getCode())) {
             $source = $invertExchangeRate->getSourceCurrency()->getCode();

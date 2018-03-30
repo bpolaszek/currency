@@ -85,7 +85,7 @@ final class FixerIOProvider implements ExchangeRateProviderInterface
 
         // Invert currencies
         if ('EUR' === $targetCurrency->getCode()) { // FixerIO free plan only provide EUR -> *
-            return $this->getExchangeRate($targetCurrency, $sourceCurrency, $date)->invertCurrencies();
+            return $this->getExchangeRate($targetCurrency, $sourceCurrency, $date)->swapCurrencies();
         }
 
         $url = sprintf('http://data.fixer.io/api/%s?access_key=%s', $date->format('Y-m-d'), $this->accessKey);

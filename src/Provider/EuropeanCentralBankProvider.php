@@ -85,7 +85,7 @@ final class EuropeanCentralBankProvider implements ExchangeRateProviderInterface
 
         // Invert currencies
         if ('EUR' === $targetCurrency->getCode()) { // ECB only provide EUR -> *
-            return $this->getExchangeRate($targetCurrency, $sourceCurrency, $date)->invertCurrencies();
+            return $this->getExchangeRate($targetCurrency, $sourceCurrency, $date)->swapCurrencies();
         }
 
         $url = $this->pickUrl($date);
