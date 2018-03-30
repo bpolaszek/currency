@@ -21,15 +21,9 @@ final class PSR16CacheProvider implements ExchangeRateProviderInterface
     private $cache;
 
     /**
-     * @var bool
-     */
-    private $storeInvertedRate;
-
-    /**
      * PSR16CacheProvider constructor.
      * @param ExchangeRateProviderInterface $exchangeRateProvider
      * @param CacheInterface|null           $cache
-     * @param bool                          $storeInvertedRate
      */
     public function __construct(
         ExchangeRateProviderInterface $exchangeRateProvider,
@@ -38,7 +32,6 @@ final class PSR16CacheProvider implements ExchangeRateProviderInterface
     ) {
         $this->exchangeRateProvider = $exchangeRateProvider;
         $this->cache = $cache ?? new ArrayCache();
-        $this->storeInvertedRate = $storeInvertedRate;
     }
 
     /**
@@ -52,10 +45,6 @@ final class PSR16CacheProvider implements ExchangeRateProviderInterface
 
         $exchangeRate = $this->exchangeRateProvider->getExchangeRate($sourceCurrency, $targetCurrency, $date);
         $this->cache->set($this->getKey($sourceCurrency, $targetCurrency, $date), $exchangeRate);
-
-        if (true === $this->storeInvertedRate) {
-            $this->cache->set($this->getKey($targetCurrency, $sourceCurrency, $date), $exchangeRate->swapCurrencies());
-        }
 
         return $exchangeRate;
     }

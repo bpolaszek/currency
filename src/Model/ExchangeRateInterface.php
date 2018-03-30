@@ -18,11 +18,4 @@ interface ExchangeRateInterface
      * @return CurrencyInterface|null
      */
     public function getTargetCurrency(): CurrencyInterface;
-
-    /**
-     * The implementation must return a NEW object with swapped currencies and inverted ratio.
-     *
-     * @return ExchangeRateInterface
-     */
-    public function swapCurrencies(): ExchangeRateInterface;
 }
