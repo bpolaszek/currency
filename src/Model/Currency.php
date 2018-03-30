@@ -17,7 +17,7 @@ final class Currency implements CurrencyInterface
      */
     public function __construct(string $code)
     {
-        $this->code = $code;
+        $this->code = strtoupper($code);
     }
 
     /**

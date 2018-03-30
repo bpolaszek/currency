@@ -5,10 +5,12 @@
     "license": "MIT",
     "require": {
         "php": ">=7.1",
+        "bentools/querystring": "^1.0",
         "php-http/discovery": "~1.0",
         "php-http/httplug": "~1.0",
         "php-http/message": "~1.6",
-        "php-http/message-factory": "~1.0"
+        "php-http/message-factory": "~1.0",
+        "psr/simple-cache": "^1.0"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "~6.3",

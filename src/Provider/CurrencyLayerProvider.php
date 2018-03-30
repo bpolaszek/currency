@@ -16,14 +16,13 @@ use Http\Discovery\HttpClientDiscovery;
 use Http\Discovery\MessageFactoryDiscovery;
 use Http\Message\RequestFactory;
 use Psr\SimpleCache\CacheInterface;
-use SimpleXMLElement;
 
-final class EuropeanCentralBankProvider implements ExchangeRateProviderInterface
+class CurrencyLayerProvider implements ExchangeRateProviderInterface
 {
-
-    const LIVE_FEED_URL = 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml';
-    const NINETYDAYS_FEED_URL = 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml';
-    const FULL_FEED_URL = 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.xml';
+    /**
+     * @var string
+     */
+    private $accessKey;
 
     /**
      * @var HttpClient|null
@@ -41,7 +40,8 @@ final class EuropeanCentralBankProvider implements ExchangeRateProviderInterface
     private $exchangeRateFactory;
 
     /**
-     * EuropeanCentralBankProvider constructor.
+     * OpenExchangeRatesProvider constructor.
+     * @param string                            $accessKey
      * @param HttpClient|null                   $client
      * @param RequestFactory|null               $requestFactory
      * @param ExchangeRateFactoryInterface|null $exchangeRateFactory
@@ -49,11 +49,13 @@ final class EuropeanCentralBankProvider implements ExchangeRateProviderInterface
      * @throws \Http\Discovery\Exception\NotFoundException
      */
     public function __construct(
+        string $accessKey,
         HttpClient $client = null,
         RequestFactory $requestFactory = null,
         ExchangeRateFactoryInterface $exchangeRateFactory = null,
         CacheInterface $cache = null
     ) {
+        $this->accessKey = $accessKey;
         $this->client = $client ?? HttpClientDiscovery::find();
         $this->requestFactory = $requestFactory ?? MessageFactoryDiscovery::find();
         $this->exchangeRateFactory = $exchangeRateFactory ?? new NativeExchangeRateFactory();
@@ -65,17 +67,15 @@ final class EuropeanCentralBankProvider implements ExchangeRateProviderInterface
     public function getExchangeRate(CurrencyInterface $sourceCurrency, CurrencyInterface $targetCurrency, DateTimeInterface $date = null): ExchangeRateInterface
     {
         if (null === $date) {
-            $date = new DateTimeImmutable('now', new DateTimeZone('Europe/Paris'));
+            $date = new DateTimeImmutable('now', new DateTimeZone('GMT'));
         }
 
         if ($date instanceof DateTime) {
-            $date = DateTimeImmutable::createFromMutable($date)->setTimezone(new DateTimeZone('Europe/Paris'));
+            $date = DateTimeImmutable::createFromMutable($date)->setTimezone(new DateTimeZone('GMT'));
         }
 
-        $dateString = $date->format('Y-m-d');
-
-        if (!in_array('EUR', [$sourceCurrency->getCode(), $targetCurrency->getCode()])) {
-            throw new ExchangeRateNotFoundException($sourceCurrency, $targetCurrency, "ECB only provide EUR-based currency conversions.");
+        if (!in_array('USD', [$sourceCurrency->getCode(), $targetCurrency->getCode()])) {
+            throw new ExchangeRateNotFoundException($sourceCurrency, $targetCurrency, "CurrencyLayer Free plan only provide USD-based currency conversions.");
         }
 
         // Same currencies
@@ -84,53 +84,17 @@ final class EuropeanCentralBankProvider implements ExchangeRateProviderInterface
         }
 
         // Invert currencies
-        if ('EUR' === $targetCurrency->getCode()) { // ECB only provide EUR -> *
+        if ('USD' === $targetCurrency->getCode()) { // CurrencyLayer free plan only provide USD -> *
             return $this->getExchangeRate($targetCurrency, $sourceCurrency, $date)->invertCurrencies();
         }
 
-        $url = $this->pickUrl($date);
+        $url = sprintf('http://apilayer.net/api/historical?access_key=%s&date=%s', $this->accessKey, $date->format('Y-m-d'));
         $response = $this->client->sendRequest($this->requestFactory->createRequest('GET', $url));
-        $xml = new SimpleXMLElement($response->getBody());
-
-        $rates = [];
-        foreach ($xml->Cube->Cube as $cube) {
-            foreach ($cube->Cube as $rate) {
-                $currency = (string) $rate['currency'];
-                $ratio = (float) (string) $rate['rate'];
-                $rates[(string) $cube['time']][$currency] = $ratio;
-            }
-        }
-
-        if (isset($rates[$dateString][$targetCurrency->getCode()])) {
-            return $this->exchangeRateFactory->create($sourceCurrency, $targetCurrency, $rates[$dateString][$targetCurrency->getCode()]);
+        $json = json_decode((string) $response->getBody(), true);
+        if (isset($json['quotes'][$sourceCurrency->getCode() . $targetCurrency->getCode()])) {
+            return $this->exchangeRateFactory->create($sourceCurrency, $targetCurrency, $json['quotes'][$sourceCurrency->getCode() . $targetCurrency->getCode()]);
         }
 
         throw new ExchangeRateNotFoundException($sourceCurrency, $targetCurrency);
-    }
-
-
-    /**
-     * @param DateTimeInterface|null $date
-     * @return string
-     */
-    private function pickUrl(DateTimeInterface $date): string
-    {
-        if ($date instanceof DateTime) {
-            $date = DateTimeImmutable::createFromMutable($date);
-        }
-
-        $today = new DateTimeImmutable('today midnight', $date->getTimezone());
-
-
-        switch (true) {
-            case $date->format('Y-m-d') === $today->format('Y-m-d'):
-                return static::LIVE_FEED_URL;
-
-            case $date >= new DateTimeImmutable('-90 days', $date->getTimezone()):
-                return static::NINETYDAYS_FEED_URL;
-
-            default:
-                return static::FULL_FEED_URL;
-        }
     }
 }

@@ -6,6 +6,8 @@ interface CurrencyInterface
 {
 
     /**
+     * The currency standard code, uppercased.
+     *
      * @return string
      */
     public function getCode(): string;
