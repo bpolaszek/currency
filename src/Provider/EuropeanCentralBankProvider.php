@@ -17,7 +17,7 @@ use Http\Discovery\MessageFactoryDiscovery;
 use Http\Message\RequestFactory;
 use SimpleXMLElement;
 
-final class EuropeanCentralBankRateProvider implements ExchangeRateProviderInterface
+final class EuropeanCentralBankProvider implements ExchangeRateProviderInterface
 {
 
     const LIVE_FEED_URL = 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml';
