@@ -30,14 +30,12 @@ final class CurrencyConverter implements CurrencyConverterInterface
     {
         $source = $exchangeRate->getSourceCurrency()->getCode();
         $target = $exchangeRate->getTargetCurrency()->getCode();
-        $this->exchangeRates[$source][$target] = $exchangeRate;
+        $this->exchangeRates[$source][$target] = $exchangeRate->getRatio();
 
-        $invertExchangeRate = $exchangeRate->swapCurrencies();
-
-        if (!$this->hasExchangeRate($invertExchangeRate->getSourceCurrency()->getCode(), $invertExchangeRate->getTargetCurrency()->getCode())) {
-            $source = $invertExchangeRate->getSourceCurrency()->getCode();
-            $target = $invertExchangeRate->getTargetCurrency()->getCode();
-            $this->exchangeRates[$source][$target] = $invertExchangeRate;
+        if (!$this->hasExchangeRate($exchangeRate->getTargetCurrency()->getCode(), $exchangeRate->getSourceCurrency()->getCode())) {
+            $source = $exchangeRate->getTargetCurrency()->getCode();
+            $target = $exchangeRate->getSourceCurrency()->getCode();
+            $this->exchangeRates[$source][$target] = 1 / $exchangeRate->getRatio();
         }
     }
 
@@ -46,7 +44,7 @@ final class CurrencyConverter implements CurrencyConverterInterface
      * @param string $targetCurrencyCode
      * @return ExchangeRateInterface|null
      */
-    public function getExchangeRate(string $sourceCurrencyCode, string $targetCurrencyCode): ?ExchangeRateInterface
+    private function getExchangeRate(string $sourceCurrencyCode, string $targetCurrencyCode): ?float
     {
         return $this->exchangeRates[$sourceCurrencyCode][$targetCurrencyCode] ?? null;
     }
@@ -56,7 +54,7 @@ final class CurrencyConverter implements CurrencyConverterInterface
      * @param string $targetCurrencyCode
      * @return bool
      */
-    public function hasExchangeRate(string $sourceCurrencyCode, string $targetCurrencyCode): bool
+    private function hasExchangeRate(string $sourceCurrencyCode, string $targetCurrencyCode): bool
     {
         return isset($this->exchangeRates[$sourceCurrencyCode][$targetCurrencyCode]);
     }
@@ -66,12 +64,12 @@ final class CurrencyConverter implements CurrencyConverterInterface
      */
     public function convert(float $amount, CurrencyInterface $sourceCurrency, CurrencyInterface $targetCurrency): float
     {
-        $exchangeRate = $this->getExchangeRate($sourceCurrency->getCode(), $targetCurrency->getCode());
+        $ratio = $this->getExchangeRate($sourceCurrency->getCode(), $targetCurrency->getCode());
 
-        if (null === $exchangeRate) {
+        if (null === $ratio) {
             throw new \RuntimeException(sprintf("No exchange rate registered for converting %s to %s", $sourceCurrency->getCode(), $targetCurrency->getCode()));
         }
 
-        return $amount * $exchangeRate->getRatio();
+        return $amount * $ratio;
     }
 }
