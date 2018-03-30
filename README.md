@@ -15,19 +15,18 @@ A very simple, framework-agnostic, PHP library to work with currencies.
 ```php
 use BenTools\Currency\Converter\CurrencyConverter;
 use BenTools\Currency\Model\Currency;
-use BenTools\Currency\Provider\EuropeanCentralBankRateProvider;
-use DateTimeImmutable;
+use BenTools\Currency\Provider\EuropeanCentralBankProvider;
+use DateTime;
 
 $eur = new Currency('EUR');
 $usd = new Currency('USD');
 
-$exchangeRateProvider = new EuropeanCentralBankRateProvider();
-$exchangeRate = $exchangeRateProvider->getExchangeRate($eur, $usd, new DateTimeImmutable('yesterday'));
+$exchangeRateProvider = new EuropeanCentralBankProvider();
+$exchangeRate = $exchangeRateProvider->getExchangeRate($eur, $usd, new DateTime('yesterday'));
 
 $currencyConverter = new CurrencyConverter($exchangeRate);
-
-var_dump(round($currencyConverter->convert(299, $usd, $eur), 2)); // float(241.17)
-var_dump(round($currencyConverter->convert(10.99, $eur, $usd), 2)); // float(13.63)
+var_dump($currencyConverter->convert(299, $usd, $eur)); // float(242.67510753997)
+var_dump($currencyConverter->convert(10.99, $eur, $usd)); // float(13.540779)
 ```
 
 `bentools/currency` respects SOLID principles. So feel free to implement your own:
