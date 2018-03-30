@@ -31,12 +31,12 @@ class CurrencyConverterSpec extends ObjectBehavior
 
     function it_converts_an_amount_from_one_currency_to_another()
     {
-        $this->convert(1, 'USD', 'EUR')->shouldReturn(0.803);
-        $this->convert(0.803, 'EUR', 'USD')->shouldReturn(1.0);
+        $this->convert(1, new Currency('USD'), new Currency('EUR'))->shouldReturn(0.803);
+        $this->convert(0.803, new Currency('EUR'), new Currency('USD'))->shouldReturn(1.0);
     }
 
     function it_throws_an_exception_when_no_exchange_rate_is_found()
     {
-        $this->shouldThrow()->during('convert', [1, 'USD', 'GBP']);
+        $this->shouldThrow()->during('convert', [1, new Currency('USD'), new Currency('GBP')]);
     }
 }

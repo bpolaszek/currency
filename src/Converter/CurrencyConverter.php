@@ -2,6 +2,7 @@
 
 namespace BenTools\Currency\Converter;
 
+use BenTools\Currency\Model\CurrencyInterface;
 use BenTools\Currency\Model\ExchangeRateInterface;
 
 final class CurrencyConverter implements CurrencyConverterInterface
@@ -63,12 +64,12 @@ final class CurrencyConverter implements CurrencyConverterInterface
     /**
      * @inheritDoc
      */
-    public function convert(float $amount, string $sourceCurrencyCode, string $targetCurrencyCode): float
+    public function convert(float $amount, CurrencyInterface $sourceCurrency, CurrencyInterface $targetCurrency): float
     {
-        $exchangeRate = $this->getExchangeRate($sourceCurrencyCode, $targetCurrencyCode);
+        $exchangeRate = $this->getExchangeRate($sourceCurrency->getCode(), $targetCurrency->getCode());
 
         if (null === $exchangeRate) {
-            throw new \RuntimeException(sprintf("No exchange rate registered for converting %s to %s", $sourceCurrencyCode, $targetCurrencyCode));
+            throw new \RuntimeException(sprintf("No exchange rate registered for converting %s to %s", $sourceCurrency->getCode(), $targetCurrency->getCode()));
         }
 
         return $amount * $exchangeRate->getRatio();
