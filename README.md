@@ -46,7 +46,7 @@ We provide adapters for popular API providers:
 - [CurrencyLayer.com](https://fixer.io/)* - ~170 currencies supported, including cryptocurrencies, USD-based in free plan
 - [OpenExchangeRates.org](https://fixer.io/)* - ~200 currencies supported, including cryptocurrencies, USD-based in free plan
 
-_\* Only free plan supported by the built-in adapters. Feel free to submit a PR for supporting paid plans._
+_\* Only free plans are currently supported by the built-in adapters. Feel free to submit a PR for supporting paid plans._
 
 ## PSR-16 provider
 
@@ -99,9 +99,25 @@ $providers = [
 $tolerance = 0.005;
 $exchangeRateProvider = AverageExchangeRateProvider::create($tolerance)->withProviders(...$providers);
 
-dump($exchangeRateProvider->getExchangeRate($eur, $usd, new DateTimeImmutable('2018-03-29'))->getRatio());
+$exchangeRateProvider->getExchangeRate($eur, $usd, new DateTimeImmutable('2018-03-29'))->getRatio();
 ```
 
+## Doctrine ORM exchange rate provider
+
+If you store your own exchange rates with Doctrine ORM, the built-in implementation may help:
+
+```php
+use App\Entity\ExchangeRate;
+use BenTools\Currency\Model\Currency;
+use BenTools\Currency\Provider\DoctrineORMProvider;
+use DateTimeImmutable;
+
+$eur = new Currency('EUR');
+$usd = new Currency('USD');
+
+$exchangeRateProvider = new DoctrineORMProvider($doctrine, ExchangeRate::class);
+$exchangeRateProvider->getExchangeRate($eur, $usd, new DateTimeImmutable('2018-03-29'))->getRatio();
+``` 
 
 ## Framework agnostic
 
