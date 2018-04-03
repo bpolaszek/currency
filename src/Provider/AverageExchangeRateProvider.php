@@ -86,7 +86,7 @@ final class AverageExchangeRateProvider implements ExchangeRateProviderInterface
 
         $min = min($ratios);
         $max = max($ratios);
-        $diff = $max - $min;
+        $diff = abs($max - $min);
 
         if ($diff > $this->tolerance) {
             throw new \RuntimeException(sprintf('Tolerance fault: %s difference between minimum and maximum ratio, %s allowed.', $diff, $this->tolerance));
