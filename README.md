@@ -6,12 +6,6 @@
 
 A very simple, framework-agnostic, PHP library to work with currencies.
 
-## Disclaimer
-
-This library is intended to be easy to use, and to cover most common needs. To achieve this, it uses `floats` as type hints (but you're free to store as integers and convert back).
-
-Keep in mind that working with floats can lead to inaccurate results when dealing with a big number of digits. [Read this](https://stackoverflow.com/questions/3730019/why-not-use-double-or-float-to-represent-currency) for further information.
-
 ## Install
 
 > composer require bentools/currency:1.0.x-dev
@@ -139,6 +133,29 @@ Don't forget that most free plans limit to 1000 calls/month, so you'd better con
 
 > ./vendor/bin/phpspec run
 
+
+## Disclaimer
+
+This library is intended to be easy to use, and aims at covering most common needs. To achieve this, it uses `floats` as type hints (but you're free to store as integers and convert back).
+
+Keep in mind that working with floats can lead to inaccurate results when dealing with a big number of digits. [Read this](https://stackoverflow.com/questions/3730019/why-not-use-double-or-float-to-represent-currency) for further information.
+
+```php
+$float = 0.1234567890123456789;
+$factorA = 1000;
+$factorB = 10000;
+
+var_dump(($float * $factorA / $factorA) === $float); // true
+var_dump(($float * $factorB / $factorB) === $float); // false
+
+$integer = 1000000000000;
+$factorA = 1000000;
+$factorB = 10000000;
+var_dump($integer * $factorA === (int) (float) ($integer * $factorA)); // true
+var_dump($integer * $factorB === (int) (float) ($integer * $factorB)); // false
+```
+
+In short, avoid dealing with big integers or a high number of decimals when using this library if precision matters.
 
 ## License
 
