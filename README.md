@@ -10,7 +10,7 @@ A very simple, framework-agnostic, PHP library to work with currencies.
 
 This library is intended to be easy to use, and to cover most common needs. To achieve this, it uses `floats` as type hints (but you're free to store as integers and convert back).
 
-Keep in mind that working with floats can lead to inaccurate results when dealing with a big number of digits. [Read this](https://stackoverflow.com/questions/3730019/why-not-use-double-or-float-to-represent-currency) for futther information.
+Keep in mind that working with floats can lead to inaccurate results when dealing with a big number of digits. [Read this](https://stackoverflow.com/questions/3730019/why-not-use-double-or-float-to-represent-currency) for further information.
 
 ## Install
 
