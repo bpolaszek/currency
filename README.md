@@ -48,6 +48,61 @@ We provide adapters for popular API providers:
 
 _\* Only free plan supported by the built-in adapters. Feel free to submit a PR for supporting paid plans._
 
+## PSR-16 provider
+
+Cache your exchange rates for the duration of your choice with the PSR-16 decorator:
+
+```php
+use BenTools\Currency\Model\Currency;
+use BenTools\Currency\Provider\EuropeanCentralBankProvider;
+use BenTools\Currency\Provider\PSR16CacheProvider;
+use Redis;
+use Symfony\Component\Cache\Simple\RedisCache;
+
+$eur = new Currency('EUR');
+$usd = new Currency('USD');
+
+$redis = new Redis();
+$redis->connect('localhost');
+$ttl = 3600;
+$provider = new PSR16CacheProvider(
+    new EuropeanCentralBankProvider(), 
+    new RedisCache($redis, 'currencies', $ttl)
+);
+
+$exchangeRate = $provider->getExchangeRate($eur, $usd);
+```
+
+## Average exchange rate provider
+
+Get an average exchange rate from different providers. If you provide a tolerance, an exception will be thrown if the difference between the lowest and the highest rate exceeds it.
+
+```php
+use BenTools\Currency\Model\Currency;
+use BenTools\Currency\Provider\AverageExchangeRateProvider;
+use BenTools\Currency\Provider\CurrencyLayerProvider;
+use BenTools\Currency\Provider\EuropeanCentralBankProvider;
+use BenTools\Currency\Provider\FixerIOProvider;
+use BenTools\Currency\Provider\OpenExchangeRatesProvider;
+use DateTimeImmutable;
+
+$eur = new Currency('EUR');
+$usd = new Currency('USD');
+
+$providers = [
+    new EuropeanCentralBankProvider(),
+    new OpenExchangeRatesProvider($openExchangeApiKey),
+    new FixerIOProvider($fixerIoApiKey),
+    new CurrencyLayerProvider($currencyLayerApiKey),
+];
+
+$tolerance = 0.005;
+$exchangeRateProvider = AverageExchangeRateProvider::create($tolerance)->withProviders(...$providers);
+
+dump($exchangeRateProvider->getExchangeRate($eur, $usd, new DateTimeImmutable('2018-03-29'))->getRatio());
+```
+
+
 ## Framework agnostic
 
 `bentools/currency` leverages  [HttpPlug](http://docs.php-http.org/en/latest/) to connect to the APIs. This means:
@@ -56,7 +111,7 @@ _\* Only free plan supported by the built-in adapters. Feel free to submit a PR 
 - By default, `bentools/currency` will automagically discover the client to use
 - You can enforce a specific client with its specific configuration in any `ExchangeRateProvider`.
 
-Don't forget that most free plans limit to 1000k calls/month, so you'd better configure your Http Client to cache responses. If you use Guzzle 6+, have a look at [kevinrob/guzzle-cache-middleware](https://github.com/Kevinrob/guzzle-cache-middleware)
+Don't forget that most free plans limit to 1000 calls/month, so you'd better configure your Http Client to cache responses. If you use Guzzle 6+, have a look at [kevinrob/guzzle-cache-middleware](https://github.com/Kevinrob/guzzle-cache-middleware)
 
 ## Tests
 

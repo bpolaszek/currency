@@ -27,8 +27,7 @@ final class PSR16CacheProvider implements ExchangeRateProviderInterface
      */
     public function __construct(
         ExchangeRateProviderInterface $exchangeRateProvider,
-        CacheInterface $cache = null,
-        bool $storeInvertedRate = false
+        CacheInterface $cache = null
     ) {
         $this->exchangeRateProvider = $exchangeRateProvider;
         $this->cache = $cache ?? new ArrayCache();
