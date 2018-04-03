@@ -48,29 +48,30 @@ We provide adapters for popular API providers:
 
 _\* Only free plans are currently supported by the built-in adapters. Feel free to submit a PR for supporting paid plans._
 
-## PSR-16 provider
+## Chained exchange rate provider
 
-Cache your exchange rates for the duration of your choice with the PSR-16 decorator:
+This provider allow you to chain providers. The 1st one which returns a result wins.
 
 ```php
 use BenTools\Currency\Model\Currency;
+use BenTools\Currency\Provider\ChainedExchangeRateProvider;
+use BenTools\Currency\Provider\CurrencyLayerProvider;
 use BenTools\Currency\Provider\EuropeanCentralBankProvider;
-use BenTools\Currency\Provider\PSR16CacheProvider;
-use Redis;
-use Symfony\Component\Cache\Simple\RedisCache;
+use BenTools\Currency\Provider\FixerIOProvider;
+use BenTools\Currency\Provider\OpenExchangeRatesProvider;
 
 $eur = new Currency('EUR');
 $usd = new Currency('USD');
 
-$redis = new Redis();
-$redis->connect('localhost');
-$ttl = 3600;
-$provider = new PSR16CacheProvider(
-    new EuropeanCentralBankProvider(), 
-    new RedisCache($redis, 'currencies', $ttl)
-);
+$providers = [
+    new EuropeanCentralBankProvider(),
+    new OpenExchangeRatesProvider($openExchangeApiKey),
+    new FixerIOProvider($fixerIoApiKey),
+    new CurrencyLayerProvider($currencyLayerApiKey),
+];
 
-$exchangeRate = $provider->getExchangeRate($eur, $usd);
+$exchangeRateProvider = new ChainedExchangeRateProvider($providers);
+$exchangeRateProvider->getExchangeRate($eur, $usd);
 ```
 
 ## Average exchange rate provider
@@ -102,7 +103,32 @@ $exchangeRateProvider = AverageExchangeRateProvider::create($tolerance)->withPro
 $exchangeRateProvider->getExchangeRate($eur, $usd, new DateTimeImmutable('2018-03-29'))->getRatio();
 ```
 
-## Doctrine ORM exchange rate provider
+## PSR-16 provider
+
+Cache your exchange rates for the duration of your choice with the PSR-16 decorator:
+
+```php
+use BenTools\Currency\Model\Currency;
+use BenTools\Currency\Provider\EuropeanCentralBankProvider;
+use BenTools\Currency\Provider\PSR16CacheProvider;
+use Redis;
+use Symfony\Component\Cache\Simple\RedisCache;
+
+$eur = new Currency('EUR');
+$usd = new Currency('USD');
+
+$redis = new Redis();
+$redis->connect('localhost');
+$ttl = 3600;
+$provider = new PSR16CacheProvider(
+    new EuropeanCentralBankProvider(), 
+    new RedisCache($redis, 'currencies', $ttl)
+);
+
+$exchangeRate = $provider->getExchangeRate($eur, $usd);
+```
+
+## Doctrine ORM provider
 
 If you store your own exchange rates with Doctrine ORM, the built-in implementation may help:
 
@@ -133,6 +159,10 @@ Don't forget that most free plans limit to 1000 calls/month, so you'd better con
 
 > ./vendor/bin/phpspec run
 
+## License
+
+MIT
+
 
 ## Disclaimer
 
@@ -156,7 +186,3 @@ var_dump($integer * $factorB === (int) (float) ($integer * $factorB)); // false
 ```
 
 In short, avoid dealing with big integers or a high number of decimals when using this library if precision matters.
-
-## License
-
-MIT
