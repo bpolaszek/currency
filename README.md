@@ -1,6 +1,7 @@
 [![Latest Stable Version](https://poser.pugx.org/bentools/currency/v/stable)](https://packagist.org/packages/bentools/currency)
 [![License](https://poser.pugx.org/bentools/currency/license)](https://packagist.org/packages/bentools/currency)
 [![Build Status](https://img.shields.io/travis/bpolaszek/currency/master.svg?style=flat-square)](https://travis-ci.org/bpolaszek/currency)
+[![Coverage Status](https://coveralls.io/repos/github/bpolaszek/currency/badge.svg?branch=master)](https://coveralls.io/github/bpolaszek/currency?branch=master)
 [![Quality Score](https://img.shields.io/scrutinizer/g/bpolaszek/currency.svg?style=flat-square)](https://scrutinizer-ci.com/g/bpolaszek/currency)
 [![Total Downloads](https://poser.pugx.org/bentools/currency/downloads)](https://packagist.org/packages/bentools/currency)
 
@@ -157,7 +158,7 @@ Don't forget that most free plans limit to 1000 calls/month, so you'd better con
 
 ## Tests
 
-> ./vendor/bin/phpspec run
+> ./vendor/bin/phpunit
 
 ## License
 

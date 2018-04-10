@@ -79,6 +79,9 @@ class ArrayCache implements CacheInterface
         if (!$this->isIterable($values)) {
             throw new \InvalidArgumentException("Values must be array or Traversable");
         }
+        foreach ($values as $key => $value) {
+            $this->set($key, $value, $ttl);
+        }
     }
 
     /**
@@ -128,7 +131,7 @@ class ArrayCache implements CacheInterface
     private function isExpired($key): bool
     {
         if (isset($this->expiries[$key]) && null !== $this->expiries[$key]) {
-            return time() <= $this->expiries[$key];
+            return time() >= $this->expiries[$key];
         }
         return false;
     }

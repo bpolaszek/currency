@@ -13,7 +13,7 @@ class DoctrineORMProvider implements ExchangeRateProviderInterface
     private const DEFAULT_PROPERTY_MAP = [
         'sourceCurrency' => 'sourceCurrencyCode',
         'targetCurrency' => 'targetCurrencyCode',
-        'date'           => 'date',
+        'day'            => 'day',
     ];
 
     /**
