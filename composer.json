@@ -13,12 +13,13 @@
         "psr/simple-cache": "^1.0"
     },
     "require-dev": {
+        "bentools/doctrine-static": "1.0.x-dev",
         "bentools/iterable-functions": "^1.1",
         "doctrine/orm": "^2.6",
         "guzzlehttp/guzzle": "~6.3",
         "php-http/guzzle6-adapter": "~1.1",
         "php-http/mock-client": "~1.1",
-        "phpunit/phpunit": "^7.1",
+        "phpunit/phpunit": "^6.0",
         "satooshi/php-coveralls": "^2.0",
         "squizlabs/php_codesniffer": "^3.2",
         "symfony/cache": "^4.0",

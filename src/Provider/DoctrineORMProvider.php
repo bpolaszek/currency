@@ -54,15 +54,15 @@ class DoctrineORMProvider implements ExchangeRateProviderInterface
     /**
      * @inheritDoc
      */
-    public function getExchangeRate(CurrencyInterface $sourceCurrency, CurrencyInterface $targetCurrency, DateTimeInterface $date = null): ExchangeRateInterface
+    public function getExchangeRate(CurrencyInterface $sourceCurrency, CurrencyInterface $targetCurrency, DateTimeInterface $day = null): ExchangeRateInterface
     {
         $em = $this->managerRegistry->getManagerForClass($this->entityClass);
         $repository = $em->getRepository($this->entityClass);
-        if (null !== $date) {
+        if (null !== $day) {
             $exchangeRate = $repository->findOneBy([
                 $this->propertyMap['sourceCurrency'] => $sourceCurrency->getCode(),
                 $this->propertyMap['targetCurrency'] => $targetCurrency->getCode(),
-                $this->propertyMap['date']           => $date,
+                $this->propertyMap['day']            => $day,
             ]);
 
             if (null === $exchangeRate) {
@@ -74,11 +74,17 @@ class DoctrineORMProvider implements ExchangeRateProviderInterface
         $criteria = [
             $this->propertyMap['sourceCurrency'] => $sourceCurrency->getCode(),
             $this->propertyMap['targetCurrency'] => $targetCurrency->getCode(),
-            $this->propertyMap['date']           => $date,
         ];
-        $orderBy = [
-            $this->propertyMap['date'] => 'desc'
-        ];
+
+        $orderBy = [];
+
+        if (null !== $day) {
+            $criteria[$this->propertyMap['day']] = $day;
+            $orderBy = [
+                $this->propertyMap['day'] => 'desc'
+            ];
+        }
+
 
         $results = $repository->findBy($criteria, $orderBy, 1);
 
