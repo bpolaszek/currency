@@ -94,7 +94,7 @@ final class AverageExchangeRateProvider implements ExchangeRateProviderInterface
     }
 
     /**
-     * @param array $array
+     * @param ExchangeRateInterface ...$exchangeRates
      * @return float
      */
     private static function getAverageRatio(ExchangeRateInterface ...$exchangeRates): float

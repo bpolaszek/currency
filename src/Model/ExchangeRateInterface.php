@@ -5,17 +5,17 @@ namespace BenTools\Currency\Model;
 interface ExchangeRateInterface
 {
     /**
-     * @return float|null
+     * @return float
      */
     public function getRatio(): float;
 
     /**
-     * @return CurrencyInterface|null
+     * @return CurrencyInterface
      */
     public function getSourceCurrency(): CurrencyInterface;
 
     /**
-     * @return CurrencyInterface|null
+     * @return CurrencyInterface
      */
     public function getTargetCurrency(): CurrencyInterface;
 }

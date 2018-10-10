@@ -43,7 +43,7 @@ final class CurrencyConverter implements CurrencyConverterInterface
     /**
      * @param string $sourceCurrencyCode
      * @param string $targetCurrencyCode
-     * @return ExchangeRateInterface|null
+     * @return float|null
      */
     private function getExchangeRate(string $sourceCurrencyCode, string $targetCurrencyCode): ?float
     {

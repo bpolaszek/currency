@@ -45,14 +45,12 @@ final class EuropeanCentralBankProvider implements ExchangeRateProviderInterface
      * @param HttpClient|null                   $client
      * @param RequestFactory|null               $requestFactory
      * @param ExchangeRateFactoryInterface|null $exchangeRateFactory
-     * @param CacheInterface|null               $cache
      * @throws \Http\Discovery\Exception\NotFoundException
      */
     public function __construct(
         HttpClient $client = null,
         RequestFactory $requestFactory = null,
-        ExchangeRateFactoryInterface $exchangeRateFactory = null,
-        CacheInterface $cache = null
+        ExchangeRateFactoryInterface $exchangeRateFactory = null
     ) {
         $this->client = $client ?? HttpClientDiscovery::find();
         $this->requestFactory = $requestFactory ?? MessageFactoryDiscovery::find();
@@ -111,7 +109,7 @@ final class EuropeanCentralBankProvider implements ExchangeRateProviderInterface
 
 
     /**
-     * @param DateTimeInterface|null $date
+     * @param DateTimeInterface $date
      * @return string
      */
     private function pickUrl(DateTimeInterface $date): string

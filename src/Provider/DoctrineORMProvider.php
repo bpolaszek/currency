@@ -85,7 +85,6 @@ class DoctrineORMProvider implements ExchangeRateProviderInterface
             ];
         }
 
-
         $results = $repository->findBy($criteria, $orderBy, 1);
 
         foreach ($results as $exchangeRate) {

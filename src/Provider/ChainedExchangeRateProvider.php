@@ -41,8 +41,8 @@ final class ChainedExchangeRateProvider implements ExchangeRateProviderInterface
     }
 
     /**
-     * @param ExchangeRateProviderInterface[] ...$exchangeRateProviders
-     * @return AverageExchangeRateProvider
+     * @param ExchangeRateProviderInterface ...$exchangeRateProviders
+     * @return ChainedExchangeRateProvider
      */
     public function withProviders(ExchangeRateProviderInterface ...$exchangeRateProviders): self
     {

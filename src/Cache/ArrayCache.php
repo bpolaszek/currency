@@ -103,7 +103,7 @@ class ArrayCache implements CacheInterface
     }
 
     /**
-     * @param $values
+     * @param mixed $values
      * @return bool
      */
     private function isIterable($values): bool
@@ -125,7 +125,7 @@ class ArrayCache implements CacheInterface
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @return bool
      */
     private function isExpired($key): bool
