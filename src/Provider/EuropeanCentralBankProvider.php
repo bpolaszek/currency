@@ -104,7 +104,7 @@ final class EuropeanCentralBankProvider implements ExchangeRateProviderInterface
             return $this->exchangeRateFactory->create($sourceCurrency, $targetCurrency, $rates[$dateString][$targetCurrency->getCode()]);
         }
 
-        throw new ExchangeRateNotFoundException($sourceCurrency, $targetCurrency);
+        throw new ExchangeRateNotFoundException($sourceCurrency, $targetCurrency, sprintf('Unable to find exchange rate for %s to %s for the date `%s`.', $sourceCurrency->getCode(), $targetCurrency->getName(), $dateString));
     }
 
 
